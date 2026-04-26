@@ -1,0 +1,134 @@
+---
+title: "COVID-19 in Newfoundland and Labrador"
+author: "John W"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Introduction
+
+This notebook studies a public data set on COVID-19 that was published online
+by Health Canada. The data set records a regular count of the total number of
+cases and deaths attributed to the disease in each of the Canadian provinces. The
+objective is to use this data set in order to study the impact of the disease
+upon Newfoundland and Labrador.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,     # hide code
+  # results = "hide", # hide printed output
+  message = FALSE,  # hide messages
+  warning = FALSE   # hide warnings
+)
+```
+
+```{r}
+  library(tidyverse)
+  library(viridis)
+  library(scales)
+
+  df <- read.csv("https://health-infobase.canada.ca/src/data/covidLive/covid19-download.csv")
+  # Convert all non-numeric values for the total case count to N/A
+  df$totalcases <- as.numeric(df$totalcases)
+  # Omit all records with N/A values
+  df <- na.omit(df)
+  df <- df %>%
+    # Select province name, date and total case count
+    dplyr::select(prname,date,totalcases,numdeaths) %>%
+    # Filter out all provinces but Newfoundland and Labrador
+    filter(prname == "Newfoundland and Labrador") %>%
+    # Filter out any records with total case counts of zero
+    filter(totalcases != 0)
+  # Convert date values from strings into actual dates
+  df$date <- as.Date(df$date)
+```
+
+# Analysis
+
+## When were the first cases of COVID-19 officially reported in Newfoundland and Labrador?
+
+```{r}
+  df %>%
+    slice(1)
+```
+
+The first six cases of COVID-19 in Newfoundland and Labrador were reported on 
+**March 21, 2020.**
+
+## What was the progression of COVID-19 in Newfoundland and Labrador?
+
+```{r}
+  df %>%
+    ggplot(mapping=aes(x=date,y=totalcases)) +
+    geom_line(linewidth=1,color=viridis(1)) +
+    labs(x="Date", y="Total Case Count", title="COVID-19 in Newfoundland and Labrador", subtitle="Total Case Count")
+```
+
+The progression of COVID-19 was initially slow, with case numbers remaining in
+the low thousands up until a point in 2022. This suggests that there was a fairly
+limited spread of the disease during the early stages of the pandemic in the province.
+A sharp period of growth in total case numbers began in 2022, likely indicating a
+major wave of the disease at this time. From mid 2022 to 2023 there was a moderate
+increase in COVID-19 cases, with the curve continuing to rise at a slower and
+steadier pace. Case numbers plateau during the period between 2023 and 2024. The graph
+demonstrates a classic pattern in pandemic growth; initial control, a sudden,
+large outbreak, then finally a gradual stabilization as spread of the disease 
+slowed over time.
+
+## How many deaths occurred in Newfoundland and Labrador due to COVID-19?
+
+```{r}
+  df %>%
+    slice_tail(n=1) %>%
+    mutate(death_rate=numdeaths / totalcases) %>%
+    mutate(death_rate=percent(death_rate, accuracy=0.01))
+```
+
+As of the last recording in May of 2024, the total number of deaths due to COVID-19
+in the province was 412, only **0.70%** of the total case count.
+
+## How does this number compare to the rest of the Canadian provinces?
+
+```{r}
+  canada_df <- read.csv("https://health-infobase.canada.ca/src/data/covidLive/covid19-download.csv")
+  # Convert all non-numeric values for the total case count to N/A
+  canada_df$totalcases <- as.numeric(canada_df$totalcases)
+  # Omit all records with N/A values
+  canada_df <- na.omit(canada_df)
+  canada_df <- canada_df %>%
+    # Select province name, date and total case count
+    dplyr::select(prname,date,totalcases,numdeaths) %>%
+    # Filter out any records with total case counts of zero
+    filter(totalcases != 0)
+  # Convert date values from strings into actual dates
+  canada_df$date <- as.Date(canada_df$date)
+  
+  canada_df %>%
+    arrange(prname, date) %>%
+    group_by(prname) %>%
+    slice_tail(n = 1) %>%
+    ungroup() %>%
+    mutate(death_rate = numdeaths / totalcases) %>%
+    arrange(desc(death_rate)) %>%
+    # Order the provinces by value instead of alphabetically
+    ggplot(aes(x = reorder(prname, death_rate), y = death_rate, fill=death_rate)) +
+    geom_col() +
+    coord_flip() +
+    scale_y_continuous(labels = percent) +
+    scale_fill_viridis_c(labels=percent,name="Death Rate") +
+    labs(title="Death Rates Due to COVID-19",subtitle="By Province",x="Province", y="Death Rate")
+```
+
+Across Canada, Newfoundland and Labrador had one of the lowest death rates due
+to COVID-19 during the pandemic, at around **0.70%,** putting it well below
+the top-rated province of British Columbia (with a death rate around **1.67%**).
+
+# Conclusion
+
+In general, then, it is apparent that in terms of total case numbers and deaths,
+Newfoundland and Labrador experienced a relatively low impact due to the pandemic.
+The province experienced one of the lowest death rates across Canada, indicating
+relatively strong outcomes during the pandemic. This could be attributed to a
+number of factors, such as healthcare response and prevention measures, as well as
+population density and size. More study is needed to confirm the fundamental reasons
+for Newfoundland's relatively strong performance during the pandemic.
