@@ -133,7 +133,7 @@ ggplot(plot_data, aes(x = reorder(primary_series, total_fully), y = total_fully,
     x = "Primary Series",
     y = "Total Fully Vaccinated",
     title = "Fully Vaccinated Counts by Vaccine Primary Series",
-    subtitle = "Newfoundland and Labrador",
+    subtitle = "Newfoundland and Labrador (2020-2024)",
     fill = "Total Fully Vaccinated"
   ) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
