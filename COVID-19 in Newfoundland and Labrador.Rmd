@@ -121,7 +121,7 @@ the top-rated province of British Columbia (with a death rate around **1.67%**).
 data <- read.csv("https://health-infobase.canada.ca/src/data/covidLive/vaccination-coverage-byVaccineType.csv")
 
 plot_data <- data |>
-  clean_names() |>
+  janitor::clean_names() |>
   filter(prename == "Newfoundland and Labrador") |>
   group_by(primary_series) |>
   summarise(total_fully = max(numtotal_fully, na.rm = TRUE))
