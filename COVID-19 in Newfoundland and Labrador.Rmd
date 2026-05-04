@@ -7,10 +7,13 @@ output: html_document
 
 # Introduction
 
-This notebook studies a public data set on COVID-19 that was published online
-by Health Canada. The data set records a regular count of the total number of
-cases and deaths attributed to the disease in each of the Canadian provinces. The
-objective is to use this data set in order to study the impact of the disease
+This notebook studies public datasets on COVID-19 that were published online
+by Health Canada:
+
+- [here](https://health-infobase.canada.ca/src/data/covidLive/covid19-download.csv)
+- [here](https://health-infobase.canada.ca/src/data/covidLive/vaccination-coverage-byVaccineType.csv)
+
+The objective is to use this data set in order to study the impact of the disease
 upon Newfoundland and Labrador.
 
 ```{r setup, include=FALSE}
@@ -28,18 +31,12 @@ knitr::opts_chunk$set(
   library(scales)
 
   df <- read.csv("https://health-infobase.canada.ca/src/data/covidLive/covid19-download.csv")
-  # Convert all non-numeric values for the total case count to N/A
   df$totalcases <- as.numeric(df$totalcases)
-  # Omit all records with N/A values
   df <- na.omit(df)
   df <- df %>%
-    # Select province name, date and total case count
     dplyr::select(prname,date,totalcases,numdeaths) %>%
-    # Filter out all provinces but Newfoundland and Labrador
     filter(prname == "Newfoundland and Labrador") %>%
-    # Filter out any records with total case counts of zero
     filter(totalcases != 0)
-  # Convert date values from strings into actual dates
   df$date <- as.Date(df$date)
 ```
 
@@ -91,16 +88,11 @@ in the province was 412, only **0.70%** of the total case count.
 
 ```{r}
   canada_df <- read.csv("https://health-infobase.canada.ca/src/data/covidLive/covid19-download.csv")
-  # Convert all non-numeric values for the total case count to N/A
   canada_df$totalcases <- as.numeric(canada_df$totalcases)
-  # Omit all records with N/A values
   canada_df <- na.omit(canada_df)
   canada_df <- canada_df %>%
-    # Select province name, date and total case count
     dplyr::select(prname,date,totalcases,numdeaths) %>%
-    # Filter out any records with total case counts of zero
     filter(totalcases != 0)
-  # Convert date values from strings into actual dates
   canada_df$date <- as.Date(canada_df$date)
   
   canada_df %>%
@@ -110,7 +102,6 @@ in the province was 412, only **0.70%** of the total case count.
     ungroup() %>%
     mutate(death_rate = numdeaths / totalcases) %>%
     arrange(desc(death_rate)) %>%
-    # Order the provinces by value instead of alphabetically
     ggplot(aes(x = reorder(prname, death_rate), y = death_rate, fill=death_rate)) +
     geom_col() +
     coord_flip() +
@@ -123,12 +114,41 @@ Across Canada, Newfoundland and Labrador had one of the lowest death rates due
 to COVID-19 during the pandemic, at around **0.70%,** putting it well below
 the top-rated province of British Columbia (with a death rate around **1.67%**).
 
+## What is the total number of fully vaccinated individuals by vaccine primary series in Newfoundland and Labrador?
+
+```{r}
+
+data <- read.csv("https://health-infobase.canada.ca/src/data/covidLive/vaccination-coverage-byVaccineType.csv")
+
+plot_data <- data |>
+  clean_names() |>
+  filter(prename == "Newfoundland and Labrador") |>
+  group_by(primary_series) |>
+  summarise(total_fully = max(numtotal_fully, na.rm = TRUE))
+
+ggplot(plot_data, aes(x = reorder(primary_series, total_fully), y = total_fully, fill = total_fully)) +
+  geom_col() +
+  theme_minimal() +
+  labs(
+    x = "Primary Series",
+    y = "Total Fully Vaccinated",
+    title = "Fully Vaccinated Counts by Vaccine Primary Series",
+    subtitle = "Newfoundland and Labrador",
+    fill = "Total Fully Vaccinated"
+  ) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  scale_y_continuous(labels = scales::comma) +
+  theme(title = element_text(hjust = 0.5)) +
+  coord_flip() +
+  scale_fill_viridis_c()
+```
+
+This horizontal bar chart compares the total number of fully vaccinated individuals in Newfoundland and Labrador by vaccine primary series. The Pfizer-BioNTech (Comirnaty) series clearly has the highest total, standing well above all other categories and indicating it was the most widely used vaccine. Mixed vaccine series (both mRNA mixed and unspecified mixed) form the next largest groups, suggesting that a notable portion of the population received combinations of vaccines. Moderna (Spikevax) also shows substantial uptake, though it trails behind Pfizer and the mixed categories. AstraZeneca and AstraZeneca–mRNA combinations appear at much lower levels, indicating more limited use. Other categories, such as Janssen (Johnson & Johnson), Novavax, and unknown or other mixed series, have very small totals, reflecting minimal contribution to overall vaccination.
+
+Overall, the plot shows that mRNA vaccines—particularly Pfizer—dominated the vaccination rollout, with mixed-dose strategies also playing a significant role, while non-mRNA vaccines were used far less frequently.
+
 # Conclusion
 
-In general, then, it is apparent that in terms of total case numbers and deaths,
-Newfoundland and Labrador experienced a relatively low impact due to the pandemic.
-The province experienced one of the lowest death rates across Canada, indicating
-relatively strong outcomes during the pandemic. This could be attributed to a
-number of factors, such as healthcare response and prevention measures, as well as
-population density and size. More study is needed to confirm the fundamental reasons
-for Newfoundland's relatively strong performance during the pandemic.
+The data from Newfoundland and Labrador shows a clear and typical pandemic trajectory, beginning with a slow initial spread after the first reported cases in March 2020, followed by a major surge in 2022 and then a gradual stabilization of case numbers into 2023–2024. Despite this increase in total cases over time, the province maintained a relatively low COVID-19 death rate of about 0.70%, which is among the lowest in Canada and suggests effective public health response and healthcare capacity throughout the pandemic.
+
+The vaccination data further helps explain this outcome. The rollout was heavily dominated by mRNA vaccines, particularly Pfizer-BioNTech, with Moderna also contributing substantially, while AstraZeneca, Janssen, and Novavax made up much smaller proportions of total vaccinations. The presence of mixed vaccine series indicates flexibility in vaccine administration strategies and widespread population coverage. Taken together, the vaccination patterns and relatively low mortality rate suggest that high uptake of mRNA vaccines, combined with public health measures, played an important role in limiting severe outcomes even as case numbers eventually increased.
