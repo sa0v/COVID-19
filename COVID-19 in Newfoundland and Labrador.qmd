@@ -5,11 +5,19 @@ format: html
 editor: visual
 ---
 
+# Introduction
+
+This notebook analyzes a data set on COVID-19 cases and deaths in Canada, published by Health Canada [here.](https://health-infobase.canada.ca/src/data/covidLive/covid19-download.csv) The purpose of this notebook is to study the impact of the disease upon the province of Newfoundland and Labrador.
+
+# Analysis
+
 ```{r}
+#| include: false
 library(tidyverse)
 library(janitor)
 library(viridis)
 library(gt)
+library(scales)
 
 # Load data
 data <- read.csv(
@@ -23,15 +31,74 @@ df <- data |>
   filter(prname == "Newfoundland and Labrador",
          totalcases > 0) |>
   mutate(date = as.Date(date)) |>
-  select(prname, date, totalcases)
+  select(prname, date, totalcases, numdeaths)
 ```
 
 ## When were the first cases of COVID-19 reported in Newfoundland and Labrador?
 
 ```{r}
+#| include: false
   df |>
     slice(1) |>
     gt()
 ```
 
 The first 6 cases of COVID-19 in Newfoundland and Labrador were reported on **March 21, 2020.**
+
+## How did the total cases of COVID-19 in Newfoundland and Labrador vary over time?
+
+```{r}
+#| echo: false
+  df |>
+    ggplot(aes(x=date,y=totalcases)) +
+    geom_line(color=viridis(1)[1],linewidth=1) +
+    labs(
+      title="Total COVID-19 Cases in Newfoundland and Labrador",
+      subtitle="As of Mid-2024",
+      x="Date",
+      y="Total Cases",
+    )
+```
+
+COVID-19 case counts in Newfoundland and Labrador remained relatively flat for the first two years of the pandemic. A steep surge in total case numbers begins in late 2022, in which case numbers rise from a few thousand to over **40,000** in less than a year, representing a period of intense growth and transmission. The curve continues to grow into 2022 and 2023 but at a much slower rate. By 2024, growth in total case numbers begins to plateau, suggesting that transmission levels were stabilizing.
+
+## How did the death rate in Newfoundland and Labrador compare to the other Canadian provinces?
+
+```{r}
+#| echo: false
+  df <- data |>
+    janitor::clean_names() |>
+    drop_na(totalcases,numdeaths) |>
+    mutate(
+      date=as.Date(date)
+    ) |>
+    filter(
+      prname != "Canada" & prname != "Repatriated travellers"
+    ) |>
+    group_by(prname) |>
+    slice_tail(n=1) |>
+    ungroup() |>
+    select(prname,date,totalcases,numdeaths) |>
+    mutate(
+      death_rate = numdeaths / totalcases,
+    ) |>
+    arrange(desc(death_rate))
+
+    ggplot(df, aes(x=reorder(prname,death_rate),y=death_rate,fill=death_rate)) +
+    geom_col() + 
+    coord_flip() +
+    scale_y_continuous(labels=scales::percent) +
+    scale_fill_viridis_c(labels=scales::percent,name="Death Rate") +
+    labs(
+      title="Death Rates Due to COVID-19 Across Canada",
+      subtitle="As of Mid-2024",
+      x="Province",
+      y="Death Rate"
+    )
+```
+
+The plot shows that the death rate in Newfoundland and Labrador due to COVID-19 was relatively low compared to the other Canadian provinces, as of mid-2024. The death rate is close to 0.7%, placing it well below the national leader British Columbia at over 1.5%. Within the Atlantic region, Newfoundland and Labrador's death rate was lower than that of New Brunswick and Nova Scotia, but higher than Prince Edward Island. Overall, the province appears to have experienced relatively lower mortality due to COVID-19 compared to the other provinces.
+
+# Conclusion
+
+Newfoundland and Labrador experienced a steep increase in COVID-19 cases after relatively low growth during the first two years of the pandemic. By 2022-2023, case numbers had grown from a few thousand to over 40,000 in less than a year. Despite this steep increase in infections, the death rate due to the disease remained relatively low compared to the other Canadian provinces. The slowing growth in cumulative case counts by 2024 and the relatively low mortality rate both suggest that Newfoundland and Labrador was able to more effectively manage the long-term impacts of the pandemic than many regions across Canada.
