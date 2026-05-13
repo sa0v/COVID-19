@@ -99,7 +99,7 @@ COVID-19 case counts in Newfoundland and Labrador remained relatively flat for t
     )
 ```
 
-The plot shows that the death rate in Newfoundland and Labrador due to COVID-19 was relatively low compared to the other Canadian provinces, as of mid-2024. The death rate is close to 0.7%, placing it well below the national leader British Columbia at over 1.5%. Within the Atlantic region, Newfoundland and Labrador's death rate was lower than that of New Brunswick and Nova Scotia, but higher than Prince Edward Island. Overall, the province appears to have experienced relatively lower mortality due to COVID-19 compared to the other provinces.
+The plot shows that the death rate in Newfoundland and Labrador due to COVID-19 was relatively low compared to the other Canadian provinces, as of mid-2024. The death rate is close to 0.7%, placing it well below the national leader British Columbia at over 1.5%. Within the Atlantic region, Newfoundland and Labrador's death rate was lower than that of New Brunswick and Nova Scotia, but higher than Prince Edward Island. Overall, the province appears to have experienced relatively lower mortality.
 
 # Conclusion
 
