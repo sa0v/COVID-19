@@ -1,0 +1,37 @@
+---
+title: "COVID-19 in Newfoundland and Labrador"
+author: "John W"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(viridis)
+library(gt)
+
+# Load data
+data <- read.csv(
+  "https://health-infobase.canada.ca/src/data/covidLive/covid19-download.csv",
+  na = "-"
+)
+
+# Filter/tidy data
+df <- data |>
+  janitor::clean_names() |>
+  filter(prname == "Newfoundland and Labrador",
+         totalcases > 0) |>
+  mutate(date = as.Date(date)) |>
+  select(prname, date, totalcases)
+```
+
+## When were the first cases of COVID-19 reported in Newfoundland and Labrador?
+
+```{r}
+  df |>
+    slice(1) |>
+    gt()
+```
+
+The first 6 cases of COVID-19 in Newfoundland and Labrador were reported on **March 21, 2020.**
