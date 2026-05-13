@@ -72,9 +72,11 @@ COVID-19 case counts in Newfoundland and Labrador remained relatively flat for t
     mutate(
       date=as.Date(date)
     ) |>
+    # Exclude invalid province names
     filter(
       prname != "Canada" & prname != "Repatriated travellers"
     ) |>
+    # Slice off the last grouping of provinces from the data set
     group_by(prname) |>
     slice_tail(n=1) |>
     ungroup() |>
@@ -88,6 +90,7 @@ COVID-19 case counts in Newfoundland and Labrador remained relatively flat for t
     geom_col() + 
     coord_flip() +
     scale_y_continuous(labels=scales::percent) +
+    # Convert the labels in the legend to percentages
     scale_fill_viridis_c(labels=scales::percent,name="Death Rate") +
     labs(
       title="Death Rates Due to COVID-19 Across Canada",
