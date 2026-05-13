@@ -83,8 +83,7 @@ COVID-19 case counts in Newfoundland and Labrador remained relatively flat for t
     select(prname,date,totalcases,numdeaths) |>
     mutate(
       death_rate = numdeaths / totalcases,
-    ) |>
-    arrange(desc(death_rate))
+    )
 
     ggplot(df, aes(x=reorder(prname,death_rate),y=death_rate,fill=death_rate)) +
     geom_col() + 
