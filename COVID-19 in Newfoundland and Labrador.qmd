@@ -43,7 +43,7 @@ df <- data |>
     gt()
 ```
 
-The first 6 cases of COVID-19 in Newfoundland and Labrador were reported on **March 21, 2020.**
+The first 6 cases of COVID-19 in Newfoundland and Labrador were reported on March 21, 2020.
 
 ## How did the total cases of COVID-19 in Newfoundland and Labrador vary over time?
 
@@ -60,7 +60,7 @@ The first 6 cases of COVID-19 in Newfoundland and Labrador were reported on **Ma
     )
 ```
 
-COVID-19 case counts in Newfoundland and Labrador remained relatively flat for the first two years of the pandemic. A steep surge in total case numbers begins in late 2022, in which case numbers rise from a few thousand to over **40,000** in less than a year, representing a period of intense growth and transmission. The curve continues to grow into 2022 and 2023 but at a much slower rate. By 2024, growth in total case numbers begins to plateau, suggesting that transmission levels were stabilizing.
+COVID-19 case counts in Newfoundland and Labrador remained relatively flat for the first two years of the pandemic. A steep surge in total case numbers begins in late 2022, in which case numbers rise from a few thousand to over 40,000 in less than a year, representing a period of intense growth and transmission. The curve continues to grow into 2022 and 2023 but at a much slower rate. By 2024, growth in total case numbers begins to plateau, suggesting that transmission levels were stabilizing.
 
 ## How did the death rate in Newfoundland and Labrador compare to the other Canadian provinces?
 
@@ -99,8 +99,8 @@ COVID-19 case counts in Newfoundland and Labrador remained relatively flat for t
     )
 ```
 
-The plot shows that the death rate in Newfoundland and Labrador due to COVID-19 was relatively low compared to the other Canadian provinces, as of mid-2024. The death rate is close to ***0.7%,** placing it well below the national leader British Columbia at over **1.5%.** Within the Atlantic region, Newfoundland and Labrador's death rate was lower than that of New Brunswick and Nova Scotia, but higher than Prince Edward Island. Overall, the province appears to have experienced relatively lower mortality due to COVID-19 compared to the other provinces.
+The plot shows that the death rate in Newfoundland and Labrador due to COVID-19 was relatively low compared to the other Canadian provinces, as of mid-2024. The death rate is close to 0.7%, placing it well below the national leader British Columbia at over 1.5%. Within the Atlantic region, Newfoundland and Labrador's death rate was lower than that of New Brunswick and Nova Scotia, but higher than Prince Edward Island. Overall, the province appears to have experienced relatively lower mortality due to COVID-19 compared to the other provinces.
 
 # Conclusion
 
-Newfoundland and Labrador experienced a steep increase in COVID-19 cases after relatively low growth during the first two years of the pandemic. By 2022-2023, case numbers had grown from a few thousand to over **40,000** in less than a year. Despite this steep increase in infections, the death rate due to the disease remained relatively low compared to the other Canadian provinces. This suggests that, even during periods of rapid spread, outcomes in terms of severe illness and death were lower in Newfoundland and Labrador than several other regions across Canada. The province's death rate remained relatively low, indicating that the rise in case numbers did not translate proportionally into higher fatalities.
+Newfoundland and Labrador experienced a steep increase in COVID-19 cases after relatively low growth during the first two years of the pandemic. By 2022-2023, case numbers had grown from a few thousand to over 40,000 in less than a year. Despite this steep increase in infections, the death rate due to the disease remained relatively low compared to the other Canadian provinces. This suggests that, even during periods of rapid spread, outcomes in terms of severe illness and death were lower in Newfoundland and Labrador than several other regions across Canada. The province's death rate remained relatively low, indicating that the rise in case numbers did not translate proportionally into higher fatalities.
